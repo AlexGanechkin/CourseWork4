@@ -23,13 +23,19 @@ class MoviesView(Resource):
 @movie_ns.route('/<int:movie_id>')
 class MoviesView(Resource):
     def get(self, movie_id):
-        return "найден", 200
+        movie = movie_service.get_one(movie_id)
+        return movie_schema.dump(movie), 200
 
     def put(self, movie_id):
-        return "updated", 204
+        json_data = request.json
+        json_data['id'] = movie_id
+        movie_service.update(json_data)
+        return f"Фильм с id - {movie_id} - был обновлен", 204
 
     def patch(self, movie_id):
-        return "partially updated", 204
+        self.put(movie_id)
+        return "", 204
 
     def delete(self, movie_id):
-        return "deleted", 204
+        movie_service.delete(movie_id)
+        return f"Фильм с id - {movie_id} - был удален из базы", 204
