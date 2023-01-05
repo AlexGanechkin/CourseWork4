@@ -1,5 +1,4 @@
-# это файл для классов доступа к данным (Data Access Object). Здесь должен быть класс с методами доступа к данным
-# здесь в методах можно построить сложные запросы к БД
+
 from dao.model.movie import Movie
 
 
@@ -9,6 +8,9 @@ class MovieDAO:
 
     def get_all(self):
         return self.session.query(Movie).all()
+
+    def get_by_filter(self, filter_criteria):
+        return self.session.query(Movie).filter(**filter_criteria)
 
     def get_one(self, entity_id):
         return self.session.query(Movie).get(entity_id)
