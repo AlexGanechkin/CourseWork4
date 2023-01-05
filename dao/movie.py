@@ -21,26 +21,12 @@ class MovieDAO:
 
         return movie
 
-    def update(self, data):
-        entity_id = data.get('id')
-
-        movie = self.get_one(entity_id)
-
-        movie.title = data.get('title')
-        movie.description = data.get('description')
-        movie.trailer = data.get('trailer')
-        movie.year = data.get('year')
-        movie.rating = data.get('rating')
-        movie.genre_id = data.get('genre_id')
-        movie.director_id = data.get('director_id')
-
+    def update(self, movie):
         self.session.add(movie)
         self.session.commit()
 
         return movie
 
-    def delete(self, entity_id):
-        movie = self.get_one(entity_id)
-
+    def delete(self, movie):
         self.session.delete(movie)
         self.session.commit()

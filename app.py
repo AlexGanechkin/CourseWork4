@@ -1,28 +1,29 @@
 from flask import Flask
 from flask_restx import Api
 
-from models import Review, Book
 from setup_db import db
-from views.books import book_ns
-from views.reviews import review_ns
 from config import Config
+from views.movies import movie_ns
 
 
 def create_app(config_object):
     """ функция создания основного объекта app """
-    app = Flask(__name__)
-    app.config.from_object(config_object)
-    register_extensions(app)
-    return app
+    application = Flask(__name__)
+    application.config.from_object(config_object)
+    application.app_context().push()
+    return application
 
 
-def register_extensions(app):
+def register_extensions(application):
     """ функция подключения расширений (Flask-SQLAlchemy, Flask-RESTx, ...) """
-    db.init_app(app)
-    api = Api(app)
+    db.init_app(application)
+    api = Api(application)
     api.add_namespace(movie_ns)
 
 
 if __name__ == '__main__':
-    app = create_app(Config())
-    app.run(host="localhost", port=10001, debug=True)
+    app_config = Config()
+    application = create_app(app_config)
+    register_extensions(application)
+
+    application.run(host="localhost", port=10001, debug=True)
