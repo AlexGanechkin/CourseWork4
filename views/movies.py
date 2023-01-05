@@ -1,6 +1,4 @@
-# здесь контроллеры/хендлеры/представления для обработки запросов (flask ручки). сюда импортируются сервисы из пакета service
-
-
+from flask import request
 from flask_restx import Resource, Namespace
 
 from container import movie_service
@@ -18,4 +16,20 @@ class MoviesView(Resource):
         return movies_schema.dump(movies), 200
 
     def post(self):
+        movie_json = request.json
+        movie_service.create(movie_json)
         return "", 201
+
+@movie_ns.route('/<int:movie_id>')
+class MoviesView(Resource):
+    def get(self, movie_id):
+        return "найден", 200
+
+    def put(self, movie_id):
+        return "updated", 204
+
+    def patch(self, movie_id):
+        return "partially updated", 204
+
+    def delete(self, movie_id):
+        return "deleted", 204
