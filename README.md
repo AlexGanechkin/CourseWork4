@@ -18,3 +18,20 @@
 
 /genres - позволяет получить список жанров
 /genres/<id жанра> - выдает конкретный жанр по его номеру
+*Курсив*
+**Жирный шрифт**
+# Заголовок
+## Заголовок
+### Заголовок
+> Цитата
+- список1
+- список2
+ссылка <https://html5zombo.com>
+[University of Rwanda](http://www.ur.ac.rw)
+* Fruit
+  * Apple
+  * Orange
+  * Banana
+* Dairy
+  * Milk
+  * Cheese
