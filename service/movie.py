@@ -1,4 +1,3 @@
-
 from dao.movie import MovieDAO
 
 
@@ -8,6 +7,11 @@ class MovieService:
         self.dao = dao
 
     def get_list(self, criteria_list):
+        """
+        Метод получает полный список фильмов, имеющийся в базе, либо список, отфильтрованный по режиссеру и/или
+        жанру фильма и/или году создания (в зависимости от полученных параметров в словаре).
+        """
+
         filtration_request = ""
         for key in criteria_list:
             if criteria_list[key] is not None:
@@ -20,12 +24,15 @@ class MovieService:
             return self.dao.get_all()
 
     def get_one(self, entity_id):
+        """ Метод получает фильм по его id """
         return self.dao.get_one(entity_id)
 
     def create(self, data):
+        """ Метод добавляет новый фильм в базу """
         return self.dao.create(data)
 
     def update(self, data):
+        """ Метод обновляет фильм в базе - все поля или часть из них, в зависимости от полученных данных """
         entity_id = data.get('id')
 
         movie = self.get_one(entity_id)
@@ -48,5 +55,6 @@ class MovieService:
         self.dao.update(movie)
 
     def delete(self, entity_id):
+        """ Метод удаляет фильм из базы """
         movie = self.get_one(entity_id)
         self.dao.delete(movie)

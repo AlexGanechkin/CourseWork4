@@ -2,6 +2,10 @@ from dao.model.genre import Genre
 
 
 class GenreDAO:
+    """
+        Функция обращается к БД для получения списка, единичных записей, добавления, удаления, обновления записей
+        по таблице genre
+    """
     def __init__(self, session):
         self.session = session
 

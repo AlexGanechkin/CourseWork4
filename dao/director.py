@@ -2,6 +2,10 @@ from dao.model.director import Director
 
 
 class DirectorDAO:
+    """
+        Функция обращается к БД для получения списка, единичных записей, добавления, удаления, обновления записей
+        по таблице director
+    """
     def __init__(self, session):
         self.session = session
 

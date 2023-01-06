@@ -12,6 +12,8 @@ genres_schema = GenreSchema(many=True)
 @genre_ns.route('/')
 class GenresView(Resource):
     def get(self):
+        """ Метод получает список жанров из базы """
+
         genres = genre_service.get_all()
         return genres_schema.dump(genres), 200
 
@@ -19,5 +21,7 @@ class GenresView(Resource):
 @genre_ns.route('/<int:genre_id>')
 class GenresView(Resource):
     def get(self, genre_id):
+        """ Метод получает жанр по его id """
+
         genre = genre_service.get_one(genre_id)
         return genre_schema.dump(genre), 200

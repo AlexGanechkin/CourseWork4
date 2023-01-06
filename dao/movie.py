@@ -4,6 +4,10 @@ from dao.model.movie import Movie
 
 
 class MovieDAO:
+    """
+    Функция обращается к БД для получения списка, единичных записей, добавления, удаления, обновления записей
+    по таблице movie
+    """
     def __init__(self, session):
         self.session = session
 
