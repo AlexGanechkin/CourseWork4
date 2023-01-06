@@ -1,3 +1,4 @@
+from sqlalchemy import text
 
 from dao.model.movie import Movie
 
@@ -10,7 +11,7 @@ class MovieDAO:
         return self.session.query(Movie).all()
 
     def get_by_filter(self, filter_criteria):
-        return self.session.query(Movie).filter(**filter_criteria)
+        return self.session.query(Movie).filter(text(filter_criteria))
 
     def get_one(self, entity_id):
         return self.session.query(Movie).get(entity_id)

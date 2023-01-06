@@ -7,8 +7,17 @@ class MovieService:
     def __init__(self, dao: MovieDAO):
         self.dao = dao
 
-    def get_all(self):
-        return self.dao.get_all()
+    def get_list(self, criteria_list):
+        filtration_request = ""
+        for key in criteria_list:
+            if criteria_list[key] is not None:
+                if len(filtration_request) > 0:
+                    filtration_request += " and "
+                filtration_request += f"Movie.{key} == {criteria_list[key]}"
+        if len(filtration_request) > 0:
+            return self.dao.get_by_filter(filtration_request)
+        else:
+            return self.dao.get_all()
 
     def get_one(self, entity_id):
         return self.dao.get_one(entity_id)
