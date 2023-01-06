@@ -7,7 +7,6 @@ director_ns = Namespace('directors')
 
 
 director_schema = DirectorSchema()
-directors_schema = DirectorSchema(many=True)
 
 
 @director_ns.route('/')
@@ -16,7 +15,7 @@ class DirectorsView(Resource):
         """ Метод получает список режиссеров из базы """
 
         directors = director_service.get_all()
-        return directors_schema.dump(directors), 200
+        return director_schema.dump(directors, many=True), 200
 
 
 @director_ns.route('/<int:director_id>')

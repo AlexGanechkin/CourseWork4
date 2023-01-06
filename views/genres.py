@@ -6,7 +6,6 @@ from dao.model.genre import GenreSchema
 genre_ns = Namespace('genres')
 
 genre_schema = GenreSchema()
-genres_schema = GenreSchema(many=True)
 
 
 @genre_ns.route('/')
@@ -15,7 +14,7 @@ class GenresView(Resource):
         """ Метод получает список жанров из базы """
 
         genres = genre_service.get_all()
-        return genres_schema.dump(genres), 200
+        return genre_schema.dump(genres, many=True), 200
 
 
 @genre_ns.route('/<int:genre_id>')
