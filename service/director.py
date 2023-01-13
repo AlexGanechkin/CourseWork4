@@ -11,3 +11,20 @@ class DirectorService:
 
     def get_one(self, entity_id):
         return self.dao.get_one(entity_id)
+
+    def create(self, data):
+        return self.dao.create(data)
+
+    def update(self, data):
+        entity_id = data.get('id')
+
+        director = self.get_one(entity_id)
+
+        if 'name' in data:
+            director.name = data.get('name')
+
+        self.dao.update(director)
+
+    def delete(self, entity_id):
+        director = self.get_one(entity_id)
+        self.dao.delete(director)
