@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restx import Api
 
 from config import Config
+from load_data import read_json
 from setup_db import db
 from views.auth import auth_ns
 from views.directors import director_ns
@@ -33,6 +34,9 @@ if __name__ == '__main__':
     app_config = Config()
     application = create_app(app_config)
     register_extensions(application)
+    """ включаем, чтобы пересоздать базу, если например изменился набор полей - исходник не смог запустить 
+    db.drop_all()
     db.create_all()
-
+    read_json()
+    """
     application.run(host="localhost", port=10001, debug=True)
