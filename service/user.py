@@ -2,6 +2,8 @@ import base64
 import hashlib
 import hmac
 
+from flask_restx import abort
+
 from constants import HASH_SALT, HASH_ITERATIONS, HASH_ALGO
 from dao.user import UserDAO
 
@@ -26,13 +28,15 @@ class UserService:
         return self.dao.get_one(entity_id)
 
     def create(self, data):
-        """ Метод добавляет нового пользователя в базу, проверка на уникальность имени пользователя """
-        username = data['username']
-        if self.dao.get_by_filter(f"username='{username}'").count() > 0:
-            return "Пользователь уже существует"
+        """ Метод добавляет нового пользователя в базу, проверка на уникальность email """
 
-        user_password = data['password']
-        data['password'] = self.get_hash(user_password)
+        email = data['email']
+        password = data['password']
+
+        if None in [email, password]:
+            raise Exception
+
+        data['password'] = self.get_hash(password)
         return self.dao.create(data)
 
     def update(self, data):
@@ -55,8 +59,11 @@ class UserService:
 
     def delete(self, entity_id):
         """ Метод удаляет пользователя из базы """
-        user = self.get_one(entity_id)
-        self.dao.delete(user)
+        try:
+            user = self.get_one(entity_id)
+            self.dao.delete(user)
+        except Exception as e:
+            abort(400)
 
     def get_hash(self, password):
         return base64.b64encode(hashlib.pbkdf2_hmac(

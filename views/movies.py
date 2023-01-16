@@ -14,7 +14,7 @@ movie_schema = MovieSchema()
 class MoviesView(Resource):
     """ Рут получает список фильмов из базы, а также добавляет новый фильм в базу """
 
-    @auth_required
+    # @auth_required
     def get(self):
         """
         Метод принимает критерии фильтрации базы (id режиссера и/или жанра и/или год создания)
@@ -23,9 +23,8 @@ class MoviesView(Resource):
         """
 
         criteria_list = {
-            'director_id': request.args.get('director_id'),
-            'genre_id': request.args.get('genre_id'),
-            'year': request.args.get('year')
+            'status': request.args.get('status'),
+            'page': request.args.get('page')
         }
         movies = movie_service.get_list(criteria_list)
         return movie_schema.dump(movies, many=True), 200

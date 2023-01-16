@@ -12,14 +12,12 @@ class MovieService:
         жанру фильма и/или году создания (в зависимости от полученных параметров в словаре).
         """
 
-        filtration_request = ""
-        for key in criteria_list:
-            if criteria_list[key] is not None:
-                if len(filtration_request) > 0:
-                    filtration_request += " and "
-                filtration_request += f"Movie.{key} == {criteria_list[key]}"
-        if len(filtration_request) > 0:
-            return self.dao.get_by_filter(filtration_request)
+        if criteria_list['status'] == "new" and criteria_list['page'] is not None:
+            return self.dao.get_sorted_paginated(criteria_list)
+        elif criteria_list['status'] == "new":
+            return self.dao.get_sorted()
+        elif criteria_list['page'] is not None:
+            return self.dao.get_paginated(criteria_list)
         else:
             return self.dao.get_all()
 

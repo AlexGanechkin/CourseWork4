@@ -16,7 +16,10 @@ class GenresView(Resource):
     def get(self):
         """ Метод получает список жанров из базы """
 
-        genres = genre_service.get_all()
+        criteria_list = {
+            'page': request.args.get('page')
+        }
+        genres = genre_service.get_list(criteria_list)
         return genre_schema.dump(genres, many=True), 200
 
     @admin_required

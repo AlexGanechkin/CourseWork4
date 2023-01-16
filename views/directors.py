@@ -17,7 +17,10 @@ class DirectorsView(Resource):
     def get(self):
         """ Метод получает список режиссеров из базы """
 
-        directors = director_service.get_all()
+        criteria_list = {
+            'page': request.args.get('page')
+        }
+        directors = director_service.get_list(criteria_list)
         return director_schema.dump(directors, many=True), 200
 
     @admin_required

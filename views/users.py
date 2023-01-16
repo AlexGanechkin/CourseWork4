@@ -25,14 +25,6 @@ class UsersView(Resource):
         users = user_service.get_list(filtration_criteria)
         return user_schema.dump(users, many=True), 200
 
-    def post(self):
-        """ Метод добавляет нового пользователя в базу """
-        user_json = request.json
-        user = user_service.create(user_json)
-        if user == "Пользователь уже существует":
-            abort(400)
-        return "", 201, {'location': f'/users/{user.id}'}
-
 
 @user_ns.route('/<int:user_id>')
 class UsersView(Resource):
