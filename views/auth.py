@@ -11,7 +11,7 @@ auth_ns = Namespace('auth')
 class AuthView(Resource):
 
     def post(self):
-        """ Метод аутентифицирует пользователя """
+        """ Метод аутентифицирует пользователя по email и паролю"""
 
         data = request.json
         email = data.get('email', None)
@@ -40,6 +40,7 @@ class AuthView(Resource):
 class AuthView(Resource):
     def post(self):
         """ Метод добавляет нового пользователя в базу """
+
         user_json = request.json
 
         try:

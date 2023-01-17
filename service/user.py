@@ -13,17 +13,10 @@ class UserService:
     def __init__(self, dao: UserDAO):
         self.dao = dao
 
-    def get_user(self, data):
-        """
-        Метод получает полный список пользователей, имеющийся в базе, либо список, отфильтрованный по роли
-        """
+    def get_user(self, email):
+        """ Метод получает пользователя по email """
 
-        if 'email' in data.keys():
-            return self.dao.get_one(data['email'])
-        elif ('name', 'surname') in data.keys():
-            return self.dao.get_by_filter(f"name='{data['name']}' and surname='{data['surname']}'")
-        else:
-            return self.dao.get_all()
+        return self.dao.get_one(email)
 
     def create(self, data):
         """ Метод добавляет нового пользователя в базу, проверка на уникальность email """
@@ -33,6 +26,8 @@ class UserService:
 
         if None in [email, password]:
             raise Exception
+        elif password == '' or email == '':
+            raise Exception
 
         data['password'] = self.get_hash(password)
         return self.dao.create(data)
@@ -40,16 +35,10 @@ class UserService:
     def update(self, data):
         """
         Метод обновляет пользователя в базе - все поля или часть из них, в зависимости от полученных данных
-        Поиск пользователя осуществляется по id или email.
+        Поиск пользователя осуществляется по email.
         """
 
-        if 'id' in data.keys():
-            user = self.dao.get_by_id(data['id'])
-            del data['id']
-        elif 'email' in data:
-            user = self.dao.get_one(data['email'])
-        else:
-            abort(401)
+        user = self.dao.get_one(data['email'])
 
         if user is None:
             abort(404)
@@ -75,14 +64,6 @@ class UserService:
         new_password = self.get_hash(data['password_2'])
         data = {'email': user.email, 'password': new_password}
         self.update(data)
-
-    def delete(self, entity_id):
-        """ Метод удаляет пользователя из базы """
-        try:
-            user = self.dao.get_by_id(entity_id)
-            self.dao.delete(user)
-        except Exception as e:
-            abort(400)
 
     def get_hash(self, password):
         return base64.b64encode(hashlib.pbkdf2_hmac(

@@ -1,5 +1,5 @@
 from flask import request
-from flask_restx import Resource, Namespace
+from flask_restx import Resource, Namespace, abort
 
 from container import user_service
 from dao.model.user import UserSchema
@@ -12,29 +12,21 @@ user_schema = UserSchema()
 
 @user_ns.route('/')
 class UsersView(Resource):
-    """ Рут получает список пользователей из базы, а также добавляет нового пользователя в базу """
+    """ Рут получает пользователя из базы, обновляет данные по нему (в т.ч. пароль) """
 
     @auth_required
     def get(self, email=None):
-        """
-        Метод принимает критерии фильтрации базы по роли пользователя и выводит список пользователей,
-        соответствующих критериям фильтрации, или весь список если критерии фильтрации не заданы.
-        """
+        """ Метод получает данные пользователя по email, который по-умолчанию извлекается из токена """
 
-        data = request.args.to_dict()
-        if email is not None:
-            data['email'] = email
+        if email is None:
+            abort(400)
 
-        users = user_service.get_user(data)
-
-        if 'email' in data:
-            return user_schema.dump(users), 200
-        else:
-            return user_schema.dump(users, many=True), 200
+        user = user_service.get_user(email)
+        return user_schema.dump(user), 200
 
     @auth_required
     def patch(self, email=None):
-        """ Метод обновляет пользователя (имя, фамилия,любимый жанр) в базе. Поис осуществляется по id, email """
+        """ Метод обновляет пользователя (имя, фамилия,любимый жанр) в базе. Поиск осуществляется по email """
 
         data = request.json
         data['email'] = email

@@ -1,4 +1,3 @@
-from sqlalchemy import text
 
 from config import Config
 from dao.model.movie import Movie
@@ -6,8 +5,7 @@ from dao.model.movie import Movie
 
 class MovieDAO:
     """
-    Функция обращается к БД для получения списка, единичных записей, добавления, удаления, обновления записей
-    по таблице movie
+    Функция обращается к БД для получения списка, единичных записей по таблице movie
     """
     def __init__(self, session):
         self.session = session
@@ -29,21 +27,3 @@ class MovieDAO:
 
     def get_one(self, entity_id):
         return self.session.query(Movie).get(entity_id)
-
-    def create(self, data):
-        movie = Movie(**data)
-
-        self.session.add(movie)
-        self.session.commit()
-
-        return movie
-
-    def update(self, movie):
-        self.session.add(movie)
-        self.session.commit()
-
-        return movie
-
-    def delete(self, movie):
-        self.session.delete(movie)
-        self.session.commit()

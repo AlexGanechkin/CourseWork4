@@ -13,7 +13,7 @@ class AuthService:
         self.user_service = user_service
 
     def generate_tokens(self, email, password, is_refresh=False):
-        user = self.user_service.get_user({'email': email})
+        user = self.user_service.get_user(email)
 
         if user is None:
             raise abort(400)
@@ -30,7 +30,7 @@ class AuthService:
         return {'access_token': access_token, 'refresh_token': refresh_token}
 
     def refresh_tokens(self, access_token, refresh_token):
-        user_data = {}
+
         if None in [access_token, refresh_token]:
             abort(401)
 

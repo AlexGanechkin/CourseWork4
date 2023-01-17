@@ -6,5 +6,4 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSON_AS_ASCII = False
     RESTX_JSON = {'ensure_ascii': False}
-    RECORDS_PER_PAGE = 5
-
+    RECORDS_PER_PAGE = 12
