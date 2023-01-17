@@ -11,6 +11,8 @@ auth_ns = Namespace('auth')
 class AuthView(Resource):
 
     def post(self):
+        """ Метод аутентифицирует пользователя """
+
         data = request.json
         email = data.get('email', None)
         password = data.get('password', None)
@@ -23,6 +25,8 @@ class AuthView(Resource):
         return tokens, 201
 
     def put(self):
+        """ Метод обновляет токены у пользователя """
+
         data = request.json
         access_token = data.get('access_token')
         refresh_token = data.get('refresh_token')

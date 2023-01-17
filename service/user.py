@@ -13,19 +13,17 @@ class UserService:
     def __init__(self, dao: UserDAO):
         self.dao = dao
 
-    def get_list(self, filtration_request=None):
+    def get_user(self, data):
         """
         Метод получает полный список пользователей, имеющийся в базе, либо список, отфильтрованный по роли
         """
 
-        if filtration_request is not None:
-            return self.dao.get_by_filter(filtration_request)
+        if 'email' in data.keys():
+            return self.dao.get_one(data['email'])
+        elif ('name', 'surname') in data.keys():
+            return self.dao.get_by_filter(f"name='{data['name']}' and surname='{data['surname']}'")
         else:
             return self.dao.get_all()
-
-    def get_one(self, entity_id):
-        """ Метод получает пользователя по его id """
-        return self.dao.get_one(entity_id)
 
     def create(self, data):
         """ Метод добавляет нового пользователя в базу, проверка на уникальность email """
@@ -40,27 +38,48 @@ class UserService:
         return self.dao.create(data)
 
     def update(self, data):
-        """ Метод обновляет пользователя в базе - все поля или часть из них, в зависимости от полученных данных """
-        entity_id = data.get('id')
+        """
+        Метод обновляет пользователя в базе - все поля или часть из них, в зависимости от полученных данных
+        Поиск пользователя осуществляется по id или email.
+        """
 
-        user = self.get_one(entity_id)
+        if 'id' in data.keys():
+            user = self.dao.get_by_id(data['id'])
+            del data['id']
+        elif 'email' in data:
+            user = self.dao.get_one(data['email'])
+        else:
+            abort(401)
 
-        if 'username' in data:
-            if self.dao.get_by_filter(f"username='{data['username']}'").count() > 0:
-                return "Пользователь уже существует"
-            user.username = data.get('username')
-        if 'password' in data:
-            user_password = data.get('password')
-            user.password = self.get_hash(user_password)
-        if 'role' in data:
-            user.role = data.get('role')
+        if user is None:
+            abort(404)
+
+        for k, v in data.items():
+            setattr(user, k, v)
 
         self.dao.update(user)
+
+    def update_password(self, data):
+        """ Метод обновляет пароль пользователя, проводится валидация старого пароля. """
+
+        user = self.dao.get_one(data['email'])
+
+        if user is None:
+            abort(400)
+
+        old_password = self.get_hash(data['password_1'])
+
+        if not self.compare_passwords(user.password, old_password):
+            abort(400)
+
+        new_password = self.get_hash(data['password_2'])
+        data = {'email': user.email, 'password': new_password}
+        self.update(data)
 
     def delete(self, entity_id):
         """ Метод удаляет пользователя из базы """
         try:
-            user = self.get_one(entity_id)
+            user = self.dao.get_by_id(entity_id)
             self.dao.delete(user)
         except Exception as e:
             abort(400)

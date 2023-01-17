@@ -13,7 +13,7 @@ class AuthService:
         self.user_service = user_service
 
     def generate_tokens(self, email, password, is_refresh=False):
-        user = self.user_service.get_list(f"email='{email}'")
+        user = self.user_service.get_user({'email': email})
 
         if user is None:
             raise abort(400)
@@ -37,12 +37,12 @@ class AuthService:
         try:
             user_data = jwt.decode(jwt=access_token, key=SECRET, algorithms=[TOKEN_ALGO])
             user_data = jwt.decode(jwt=refresh_token, key=SECRET, algorithms=[TOKEN_ALGO])
+            tokens = self.generate_tokens(user_data['email'], None, True)
+            return tokens
         except Exception as e:
             abort(401)
 
-        tokens = self.generate_tokens(user_data['email'], None, True)
 
-        return tokens
 
     def get_token(self, user_data, token_life):
         token_life = datetime.datetime.utcnow() + datetime.timedelta(minutes=token_life)
