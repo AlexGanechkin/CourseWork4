@@ -33,6 +33,10 @@ class UsersView(Resource):
         user_service.update(data)
         return "", 201
 
+
+@user_ns.route('/password')
+class UsersView(Resource):
+
     @auth_required
     def put(self, email=None):
         data = request.json
